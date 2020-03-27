@@ -258,47 +258,65 @@ public class EmpDAO {
 
 //	
 	/** 출근 및 퇴근시간 업데이트 */
-	public boolean updateWkInfo(EmpDTO dto, EmpList empList, String strPay) {
-		String wkDay = dto.getWkDay();
-		String wkStart = dto.getWkStart();
-		String wkEnd = dto.getWkEnd();
+	public boolean updateWkInfo(String wkDay, String wkStartOrEnd, String strPay) {
+//		String wkDayDb;
+//		String wkStart = dto.getWkStart();
+//		String wkEnd = dto.getWkEnd();
 		String empNo = Login.empNo;
+		EmpList empList = new EmpList();
 		boolean ok = false;
 		Connection con = null;
 		PreparedStatement ps = null;
 		PreparedStatement ps2 = null;
+		ResultSet rs = null;
 		
-		if(empList.wkStart == 1) {
-			try {
-				con = getConn();
-	
-				String sql = "insert into emp_wk(EMP_NO, WK_DAY, WK_START) "
-						+ "values('" + empNo + "', '" + wkDay + "', '" + wkStart + "')";
-	
-	//			String sql = "update emp_wk set WK_DAY = '" + wkDay + "', WK_START = '" + wkStart + "'"
-	//					+ " where emp_no = '" + empNo + "'";
-	
-				ps = con.prepareStatement(sql);
-	
-				int r = ps.executeUpdate(); // 실행 -> 수정
-				// 1~n: 성공 , 0 : 실패
-	
-				if (r > 0)
-	
-					ok = true; // 수정이 성공되면 ok값을 true로 변경
-	
-			} catch (Exception e) {
-				e.printStackTrace();
+		if(strPay == null) {
+			if(empList.wkStart == 1) {
+				try {
+					con = getConn();
+		
+					String sql = "insert into emp_wk(EMP_NO, WK_DAY, WK_START) "
+							+ "values('" + empNo + "', '" + wkDay + "', '" + wkStartOrEnd + "')";
+		
+		//			String sql = "update emp_wk set WK_DAY = '" + wkDay + "', WK_START = '" + wkStart + "'"
+		//					+ " where emp_no = '" + empNo + "'";
+		
+					ps = con.prepareStatement(sql);
+		
+					int r = ps.executeUpdate(); // 실행 -> 수정
+					// 1~n: 성공 , 0 : 실패
+	//				rs = ps.executeQuery();
+		
+					if (r > 0) {
+						ok = true; // 수정이 성공되면 ok값을 true로 변경
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
+		
 		if(empList.wkEnd == 1) {
 			try {
-				con = getConn();
-									
-				String sql = "update emp_wk set WK_END = '" + wkEnd + "', PAY = '" + strPay + "'  "
-						+ "where WK_DAY = '" + wkDay + "'";
+				String wkDayDb;
 				
-				ps = con.prepareStatement(sql);
+				con = getConn();
+				
+				String sql1 = "select WK_DAY from emp_wk where emp_no = '1' order by WK_DAY asc";
+				ps = con.prepareStatement(sql1);
+				rs = ps.executeQuery();
+				
+				if(rs.next()) {
+					wkDayDb = rs.getString(3);
+				}
+				
+				wkDayDb = rs.getString(3);
+				System.out.println(wkDayDb);
+									
+				String sql2 = "update emp_wk set WK_END = '" + wkStartOrEnd + "', PAY = '" + strPay + "'  "
+						+ "where WK_DAY = '" + wkDayDb + "'";
+				
+				ps2 = con.prepareStatement(sql2);
 				
 				int r = ps.executeUpdate(); // 실행 -> 수정
 				// 1~n: 성공 , 0 : 실패

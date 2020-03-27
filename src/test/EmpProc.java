@@ -29,7 +29,7 @@ public class EmpProc extends JFrame implements ActionListener {
 	JPasswordField xPwd;
 	JButton btnSignUp, btnWkStart, btnWkEnd, btnClose;
 	JComboBox cbEmpPos;
-	String[] div = { "대표이사", "고문", "부장", ",차장", "과장", "대리", "사원" };
+	String[] div = { "대표이사", "고문", "부장", "차장", "과장", "대리", "사원", "인턴" };
 	
 
 	GridBagLayout gb;
