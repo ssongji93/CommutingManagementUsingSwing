@@ -258,7 +258,7 @@ public class EmpDAO {
 
 //	
 	/** 출근 및 퇴근시간 업데이트 */
-	public boolean updateWkInfo(EmpDTO dto, EmpList empList) {
+	public boolean updateWkInfo(EmpDTO dto, EmpList empList, String strPay) {
 		String wkDay = dto.getWkDay();
 		String wkStart = dto.getWkStart();
 		String wkEnd = dto.getWkEnd();
@@ -295,7 +295,8 @@ public class EmpDAO {
 			try {
 				con = getConn();
 									
-				String sql = "update emp_wk set WK_END = '" + wkEnd + "' where WK_DAY = '" + wkDay + "'";
+				String sql = "update emp_wk set WK_END = '" + wkEnd + "', PAY = '" + strPay + "'  "
+						+ "where WK_DAY = '" + wkDay + "'";
 				
 				ps = con.prepareStatement(sql);
 				
