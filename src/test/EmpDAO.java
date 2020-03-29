@@ -116,8 +116,8 @@ public class EmpDAO {
 		try {
 
 			con = getConn();
-			String sql = "select emp.emp_no, name, emp_pos, id, wk_day, wk_start, wk_end, pay from emp "
-					+ "join emp_wk on emp.emp_no = emp_wk.emp_no where id = '" + loginId + "' order by WK_DAY";
+			String sql = "select emp.emp_no, name, emp_pos, id, wk_day, wk_start, wk_end, daily_wage from emp "
+					+ "join emp_wk on emp.emp_no = emp_wk.emp_no where id = '" + loginId + "' order by WK_DAY desc";
 			ps = con.prepareStatement(sql);
 			rs = ps.executeQuery();
 
@@ -129,7 +129,7 @@ public class EmpDAO {
 				String wk_day = rs.getString("wk_day");
 				String wk_start = rs.getString("wk_start");
 				String wk_end = rs.getString("wk_end");
-				String pay = rs.getString("pay");
+				String pay = rs.getString("daily_wage");
 
 				Vector row = new Vector();
 				row.add(empNo);
@@ -220,11 +220,7 @@ public class EmpDAO {
 			}
 
 			while (rs.next()) {
-				Object data[] = { 
-						rs.getString(1),
-						rs.getString(2), 
-						rs.getString(3), 
-						rs.getString(4) };
+				Object data[] = { rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4) };
 
 				model.addRow(data);
 			}
@@ -255,101 +251,10 @@ public class EmpDAO {
 				}
 		}
 	}
-
-//	
-	/** 출근 및 퇴근시간 업데이트 */
-	public boolean updateWkInfo(String wkDay, String wkStartOrEnd, String strPay) {
-//		String wkDayDb;
-//		String wkStart = dto.getWkStart();
-//		String wkEnd = dto.getWkEnd();
-		String empNo = Login.empNo;
-		EmpList empList = new EmpList();
-		boolean ok = false;
-		Connection con = null;
-		PreparedStatement ps = null;
-		PreparedStatement ps2 = null;
-		ResultSet rs = null;
-		
-		if(strPay == null) {
-			if(empList.wkStart == 1) {
-				try {
-					con = getConn();
-		
-					String sql = "insert into emp_wk(EMP_NO, WK_DAY, WK_START) "
-							+ "values('" + empNo + "', '" + wkDay + "', '" + wkStartOrEnd + "')";
-		
-		//			String sql = "update emp_wk set WK_DAY = '" + wkDay + "', WK_START = '" + wkStart + "'"
-		//					+ " where emp_no = '" + empNo + "'";
-		
-					ps = con.prepareStatement(sql);
-		
-					int r = ps.executeUpdate(); // 실행 -> 수정
-					// 1~n: 성공 , 0 : 실패
-	//				rs = ps.executeQuery();
-		
-					if (r > 0) {
-						ok = true; // 수정이 성공되면 ok값을 true로 변경
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		
-		if(empList.wkEnd == 1) {
-			try {
-				String wkDayDb;
-				
-				con = getConn();
-				
-				String sql1 = "select WK_DAY from emp_wk where emp_no = '1' order by WK_DAY asc";
-				ps = con.prepareStatement(sql1);
-				rs = ps.executeQuery();
-				
-				if(rs.next()) {
-					wkDayDb = rs.getString(3);
-				}
-				
-				wkDayDb = rs.getString(3);
-				System.out.println(wkDayDb);
-									
-				String sql2 = "update emp_wk set WK_END = '" + wkStartOrEnd + "', PAY = '" + strPay + "'  "
-						+ "where WK_DAY = '" + wkDayDb + "'";
-				
-				ps2 = con.prepareStatement(sql2);
-				
-				int r = ps.executeUpdate(); // 실행 -> 수정
-				// 1~n: 성공 , 0 : 실패
-				
-				if (r > 0)		
-					ok = true; // 수정이 성공되면 ok값을 true로 변경
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-		}
-
-//		try {
-//			con = getConn();
-//			String sql2 = "insert into emp_wk(EMP_NO, WK_DAY) values ('" + empNo + "', '9999-12-31')";
-//			
-//			ps2 = con.prepareStatement(sql2);
-//			
-//			int r = ps2.executeUpdate(); // 실행 -> 수정
-//			// 1~n: 성공 , 0 : 실패
-//
-//			if (r > 0)
-//				ok = true; // 수정이 성공되면 ok값을 true로 변경
-//
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-
-		return ok;
-	}
-//
-//	/**
-//	 * 회원정보 삭제 : tip: 실무에서는 회원정보를 Delete 하지 않고 탈퇴여부만 체크한다.
-//	 */
+	
+	/**
+	 * 회원정보 삭제 : tip: 실무에서는 회원정보를 Delete 하지 않고 탈퇴여부만 체크한다.
+	 */
 //	public boolean deleteEmp(String id, String pwd) {
 //
 //		boolean ok = false;

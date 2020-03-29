@@ -158,6 +158,9 @@ public class EmpList extends JFrame implements ActionListener, MouseListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnSearch) {
+			EmpDTO dto = new EmpDTO();
+			
+			System.out.println(dto.getEmpPos());
 
 //			String[] name;
 			String search = xSearch.getText();
@@ -181,13 +184,9 @@ public class EmpList extends JFrame implements ActionListener, MouseListener{
 						
 			int result = JOptionPane.showConfirmDialog(null, "출근하시겠습니까?", "출근도장", JOptionPane.YES_NO_OPTION);
 			if(result == JOptionPane.YES_OPTION) {
-				EmpDAO dao = new EmpDAO();
-				this.wkStart = 1;
-//				dto.setWkDay(nowDay);
-//				dto.setWkStart(nowHourMin);
-				dao.updateWkInfo(nowDay, nowHourMin, null);
+				WkAndPayData wkInfo = new WkAndPayData();
+				wkInfo.insertWkDayAndStart(nowDay, nowHourMin);
 				JOptionPane.showMessageDialog(null, "출근되었습니다.", "확인", JOptionPane.INFORMATION_MESSAGE);
-				this.wkStart = 0;
 			}else
 				return;
 		}
@@ -197,34 +196,36 @@ public class EmpList extends JFrame implements ActionListener, MouseListener{
 //			EmpDAO dao = new EmpDAO();
 			
 			LocalDateTime now = LocalDateTime.now();
-			
-			DateTimeFormatter dtf1 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-			DateTimeFormatter dtf2 = DateTimeFormatter.ofPattern("HH:mm");
-			
-			String nowDay = now.format(dtf1);
-			String nowHourMin = now.format(dtf2);
+		
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm");
+
+			String nowHourMin = now.format(dtf);
 						
 			int result = JOptionPane.showConfirmDialog(null, "퇴근하시겠습니까?", "퇴근도장", JOptionPane.YES_NO_OPTION);
 			if(result == JOptionPane.YES_OPTION) {
-				EmpDAO dao = new EmpDAO();
-				this.wkEnd = 1;
-//				dto.setWkDay(nowDay);
-//				dto.setWkEnd(nowHourMin);
+				String empNo = dto.getEmpPos();
+				WkAndPayData wkInfo = new WkAndPayData();
+				String[] wk = wkInfo.getWkDay(empNo);
+				String wkDay = wk[0];
+				String wkStart = wk[1];
 				
-//				String[] wkStartHourMin = dto.getWkStart().split(":");
-//				String[] wkEndHourMin = dto.getWkEnd().split(":");
-//				double wkStartHour = Double.parseDouble(wkStartHourMin[0]);
-//				double wkStartMin = Double.parseDouble(wkStartHourMin[1]);
-//				double wkEndHour = Double.parseDouble(wkEndHourMin[0]);
-//				double wkEndMin = Double.parseDouble(wkEndHourMin[1]);
+				System.out.println(wkDay);
+				System.out.println(wkStart);
+				
+				String[] wkStartHourMin = wkStart.split(":");
+				String[] wkEndHourMin = nowHourMin.split(":");
+				
+				double wkStartHour = Double.parseDouble(wkStartHourMin[0]);
+				double wkStartMin = Double.parseDouble(wkStartHourMin[1]);
+				double wkEndHour = Double.parseDouble(wkEndHourMin[0]);
+				double wkEndMin = Double.parseDouble(wkEndHourMin[1]);
 //				
-//				int pay = (int) (((wkEndHour - wkStartHour) * 10000) + ((wkEndMin - wkStartMin)/60) * 10000);
-//				String strPay = String.valueOf(pay);
-//				System.out.println(strPay);
-//				dao.updateWkInfo(null, nowHourMin, strPay);
+				int pay = (int) (((wkEndHour - wkStartHour) * 10000) + ((wkEndMin - wkStartMin)/60) * 10000);
+				String strPay = String.valueOf(pay) + "원";
+				System.out.println(strPay);
+				wkInfo.updateWkEndAndPay(empNo, wkDay, nowHourMin, strPay);
 				
 				JOptionPane.showMessageDialog(null, "퇴근되었습니다.", "확인", JOptionPane.INFORMATION_MESSAGE);
-				this.wkEnd = 0;
 			}else
 				return;
 		}

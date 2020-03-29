@@ -96,7 +96,6 @@ public class Login extends JFrame implements ActionListener {
 			JOptionPane.showMessageDialog(null, "로그인 되었습니다", "", JOptionPane.INFORMATION_MESSAGE);
 			xId.setText("");
 			xPwd.setText("");
-
 			new EmpList(dto);
 		} else {
 			System.out.println("실패");
