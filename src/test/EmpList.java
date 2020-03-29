@@ -82,26 +82,26 @@ public class EmpList extends JFrame implements ActionListener, MouseListener{
 		btnWkStart.setForeground(new Color(82, 54, 55));
 		btnWkStart.setBackground(new Color(255, 215, 0));
 		btnWkStart.addActionListener(this);
-		btnWkStart.setBounds(750, 56, 97, 30);
+		btnWkStart.setBounds(750, 50, 97, 30);
 		panel.add(btnWkStart);
 		
 		btnWkEnd = new JButton("퇴근도장");
 		btnWkEnd.setForeground(new Color(82, 54, 55));
 		btnWkEnd.setBackground(new Color(255, 215, 0));
 		btnWkEnd.addActionListener(this);
-		btnWkEnd.setBounds(857, 56, 97, 30);
+		btnWkEnd.setBounds(857, 50, 97, 30);
 		panel.add(btnWkEnd);
 		
 		btnSearch = new JButton("검색");
 		btnSearch.setForeground(new Color(82, 54, 55));
 		btnSearch.setBackground(new Color(255, 215, 0));
 		btnSearch.addActionListener(this);
-		btnSearch.setBounds(857, 96, 97, 23);
+		btnSearch.setBounds(857, 90, 97, 30);
 		panel.add(btnSearch);
 
 		xSearch = new JTextField();
-		xSearch.setText("날짜를 입력하세요");
-		xSearch.setBounds(655, 96, 198, 23);
+		xSearch.setText("날짜입력 : yyyy-MM-dd");
+		xSearch.setBounds(655, 90, 198, 30);
 		xSearch.addMouseListener(this);
 		panel.add(xSearch);
 		xSearch.setColumns(10);
@@ -158,9 +158,6 @@ public class EmpList extends JFrame implements ActionListener, MouseListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnSearch) {
-			EmpDTO dto = new EmpDTO();
-			
-			System.out.println(dto.getEmpPos());
 
 //			String[] name;
 			String search = xSearch.getText();
@@ -170,6 +167,8 @@ public class EmpList extends JFrame implements ActionListener, MouseListener{
 //				System.out.println(name[i]);
 //			}
 		}
+//		jTableRefresh();
+		
 		if(e.getSource() == btnWkStart) {
 //			EmpDTO dto = new EmpDTO();
 
@@ -189,6 +188,8 @@ public class EmpList extends JFrame implements ActionListener, MouseListener{
 				JOptionPane.showMessageDialog(null, "출근되었습니다.", "확인", JOptionPane.INFORMATION_MESSAGE);
 			}else
 				return;
+			
+			jTableRefresh();
 		}
 		
 		if(e.getSource() == btnWkEnd) {
@@ -233,10 +234,11 @@ public class EmpList extends JFrame implements ActionListener, MouseListener{
 				JOptionPane.showMessageDialog(null, "퇴근되었습니다.", "확인", JOptionPane.INFORMATION_MESSAGE);
 			}else
 				return;
-		}
+			
+			jTableRefresh();
+		}		
 		
-		jTableRefresh();
-		
+
 	}
 
 	@Override

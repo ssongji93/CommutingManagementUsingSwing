@@ -110,6 +110,7 @@ public class EmpDAO {
 	/** id를 받아 한사람의 멤버리스트 출력 */
 	public Vector getEmpList(EmpDTO dto) {
 		String loginId = dto.getId();
+		System.out.println(loginId);
 		Vector data = new Vector(); // Jtable에 값을 쉽게 넣는 방법 1. 2차원배열 2. Vector 에 vector추가
 
 		Connection con = null; // 연결
@@ -125,14 +126,14 @@ public class EmpDAO {
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
-				String empNo = rs.getString("EMP_NO");
-				String name = rs.getString("NAME");
-				String empPos = rs.getString("EMP_POS");
-				String id = rs.getString("ID");
-				String wk_day = rs.getString("wk_day");
-				String wk_start = rs.getString("wk_start");
-				String wk_end = rs.getString("wk_end");
-				String pay = rs.getString("daily_wage");
+				String empNo = rs.getString(1);
+				String name = rs.getString(2);
+				String empPos = rs.getString(3);
+				String id = rs.getString(4);
+				String wk_day = rs.getString(5);
+				String wk_start = rs.getString(6);
+				String wk_end = rs.getString(7);
+				String daily_wage = rs.getString(8);
 
 				Vector row = new Vector();
 				row.add(empNo);
@@ -142,7 +143,7 @@ public class EmpDAO {
 				row.add(wk_day);
 				row.add(wk_start);
 				row.add(wk_end);
-				row.add(pay);
+				row.add(daily_wage);
 
 				data.add(row);
 			} // while
@@ -206,14 +207,15 @@ public class EmpDAO {
 
 	/** 검색 */
 	public static void selectSearchEmpNo(DefaultTableModel model, String search) {
-
+		String empNo = Login.empNo;
 		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-
+		
 		try {
 			con = getConn();
-			String sql = "SELECT EMP_NO, NAME, EMP_POS, ID FROM EMP where name like '%" + search + "%'";
+			String sql = "SELECT EMP_wk.EMP_NO, NAME, EMP_POS, ID, wk_day, wk_start, wk_end, daily_wage from emp_wk "
+					+ "join emp on emp.emp_no = emp_wk.emp_no where wk_day = '" + search + "' and emp.emp_no = '" +empNo + "'";
 			ps = con.prepareStatement(sql);
 			rs = ps.executeQuery();
 
@@ -223,7 +225,15 @@ public class EmpDAO {
 			}
 
 			while (rs.next()) {
-				Object data[] = { rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4) };
+				Object data[] = { 
+						rs.getString(1), 
+						rs.getString(2), 
+						rs.getString(3), 
+						rs.getString(4),
+						rs.getString(5),
+						rs.getString(6),
+						rs.getString(7),
+						rs.getString(8)};
 
 				model.addRow(data);
 			}
@@ -412,54 +422,6 @@ public class EmpDAO {
 //					e.printStackTrace();
 //				}
 //		}
-//	}
-
-//	public static String[] selectSearch(String search) {
-//		String[] name = new String[10];
-//		int i = 0;
-//		
-//		Connection con = null;
-//		PreparedStatement ps = null;
-//		ResultSet rs = null;
-//
-//		try {
-//			con = getConn();
-//			String sql = "SELECT id FROM EMP where name like '%" + search + "%'";
-//			ps = con.prepareStatement(sql);
-//			rs = ps.executeQuery();
-//
-//			while (rs.next()) {
-//				name[i] = rs.getString(1);
-////				System.out.println(name[i]);
-//				i++;
-//			}
-//
-//		} catch (SQLException e) {
-//			System.out.println(e + "=> userSelectAll fail");
-//		} finally {
-//
-//			if (rs != null)
-//				try {
-//					rs.close();
-//				} catch (SQLException e2) {
-//					e2.printStackTrace();
-//				}
-//			if (ps != null)
-//				try {
-//					ps.close();
-//				} catch (SQLException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				}
-//			if (con != null)
-//				try {
-//					con.close();
-//				} catch (SQLException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//		}
-//		return name;
 //	}
 
 }
