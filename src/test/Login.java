@@ -23,7 +23,10 @@ public class Login extends JFrame implements ActionListener {
 	JPasswordField xPwd;
 	JButton btnSignUp, btnLog;
 	JComboBox cbEmpPos;
-	static String empNo;
+	
+	static String[] empNoAndPos;
+	static String empNo, empPos;
+
 
 	public Login() {
 		super.setBounds(100, 100, 1280, 720);
@@ -89,7 +92,10 @@ public class Login extends JFrame implements ActionListener {
 		// 화면에서 사용자가 입력한 내용을 얻는다.
 		EmpDTO dto = getIdPwdData();
 		EmpDAO dao = new EmpDAO();
-		empNo = dao.getEmpNo(dto.getId());
+		empNoAndPos = dao.getEmpNoAndPos(dto.getId());
+		empNo = empNoAndPos[0];
+		empPos = empNoAndPos[1];
+
 		boolean ok = dao.empSelectLogin(dto);
 
 		if (ok) {

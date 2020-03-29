@@ -203,9 +203,11 @@ public class EmpList extends JFrame implements ActionListener, MouseListener{
 						
 			int result = JOptionPane.showConfirmDialog(null, "퇴근하시겠습니까?", "퇴근도장", JOptionPane.YES_NO_OPTION);
 			if(result == JOptionPane.YES_OPTION) {
-				String empNo = dto.getEmpPos();
-				WkAndPayData wkInfo = new WkAndPayData();
-				String[] wk = wkInfo.getWkDay(empNo);
+				String empNo = Login.empNo;
+				String empPos = Login.empPos;
+				
+				WkAndPayData wkAndPayInfo = new WkAndPayData();
+				String[] wk = wkAndPayInfo.getWkDay(empNo);
 				String wkDay = wk[0];
 				String wkStart = wk[1];
 				
@@ -219,11 +221,14 @@ public class EmpList extends JFrame implements ActionListener, MouseListener{
 				double wkStartMin = Double.parseDouble(wkStartHourMin[1]);
 				double wkEndHour = Double.parseDouble(wkEndHourMin[0]);
 				double wkEndMin = Double.parseDouble(wkEndHourMin[1]);
+				
+				String hourWage = wkAndPayInfo.getHourlyWage(empPos);
+				int iHourWage = Integer.parseInt(hourWage);
 //				
-				int pay = (int) (((wkEndHour - wkStartHour) * 10000) + ((wkEndMin - wkStartMin)/60) * 10000);
+				int pay = (int) (((wkEndHour - wkStartHour) * iHourWage) + ((wkEndMin - wkStartMin)/60) * iHourWage);
 				String strPay = String.valueOf(pay) + "원";
 				System.out.println(strPay);
-				wkInfo.updateWkEndAndPay(empNo, wkDay, nowHourMin, strPay);
+				wkAndPayInfo.updateWkEndAndPay(empNo, wkDay, nowHourMin, strPay);
 				
 				JOptionPane.showMessageDialog(null, "퇴근되었습니다.", "확인", JOptionPane.INFORMATION_MESSAGE);
 			}else

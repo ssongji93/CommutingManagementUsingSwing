@@ -75,9 +75,9 @@ public class EmpDAO {
 		return dto;
 	}
 
-	/** 로그인시 사원번호 받아오기 */
-	public String getEmpNo(String id) {
-
+	/** 로그인시 사원번호 및 직급 받아오기 */
+	public String[] getEmpNoAndPos(String id) {
+		String[] empNoAndPos = new String[2];
 		EmpDTO dto = new EmpDTO();
 
 		Connection con = null; // 연결
@@ -87,21 +87,24 @@ public class EmpDAO {
 		try {
 
 			con = getConn();
-			String sql = "select emp_no from emp where id=?";
+			String sql = "select emp_no, emp_pos from emp where id=?";
 			ps = con.prepareStatement(sql);
 			ps.setString(1, id);
 
 			rs = ps.executeQuery();
 
 			if (rs.next()) {
-				dto.setEmpNo(rs.getString("emp_no"));
-
+				dto.setEmpNo(rs.getString(1));
+				dto.setEmpPos(rs.getString(2));
 			}
+			empNoAndPos[0] = dto.getEmpNo();
+			empNoAndPos[1] = dto.getEmpPos();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		return dto.getEmpNo();
+		return empNoAndPos;
 	}
 
 	/** id를 받아 한사람의 멤버리스트 출력 */

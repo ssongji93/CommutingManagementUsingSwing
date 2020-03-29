@@ -96,9 +96,8 @@ public class WkAndPayData {
 	}
 	
 	/** 직급에 따른 시급 데이터 가져오기 */
-	public String getHourlyWage(String empNo) {
-		EmpList empList = new EmpList();
-		String[] wkDayAndStart = new String[2];
+	public String getHourlyWage(String empPos) {	
+		String hourWageDb ="";
 		Connection con = null;
 		PreparedStatement ps = null;
 
@@ -107,7 +106,7 @@ public class WkAndPayData {
 		try {
 			con = getConn();
 
-			String sql = "select wk_day, wk_start from emp_wk where emp_no = '" + empNo + "' order by wk_day desc";
+			String sql = "select hourly_wage from emp_pos where emp_pos = '" + empPos +"'";
 
 			ps = con.prepareStatement(sql);
 			rs = ps.executeQuery();
@@ -117,15 +116,14 @@ public class WkAndPayData {
 			// 1~n: 성공 , 0 : 실패
 			
 			if(rs.next()) {
-				wkDayAndStart[0] = rs.getString(1);
-				wkDayAndStart[1] = rs.getString(2);
+				hourWageDb = rs.getString(1);
 				
 			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return wkDayAndStart;
+		return hourWageDb;
 	}
 	
 	/** 퇴근시간 및 임금 업데이트 */
