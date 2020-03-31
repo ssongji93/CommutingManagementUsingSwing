@@ -110,7 +110,6 @@ public class EmpDAO {
 	/** id를 받아 한사람의 멤버리스트 출력 */
 	public Vector getEmpList(EmpDTO dto) {
 		String loginId = dto.getId();
-		System.out.println(loginId);
 		Vector data = new Vector(); // Jtable에 값을 쉽게 넣는 방법 1. 2차원배열 2. Vector 에 vector추가
 
 		Connection con = null; // 연결
@@ -263,6 +262,60 @@ public class EmpDAO {
 					e.printStackTrace();
 				}
 		}
+	}
+	
+	/**사원번호 존재유무 체크 */
+	public String countEmpNo() {
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		String countEmpNo = "";
+		
+
+		try {
+			con = getConn();
+			String sql = "select count(emp_pos) from emp";
+			ps = con.prepareStatement(sql);
+			rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				countEmpNo = rs.getString(1);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return countEmpNo;
+		
+	}
+	
+	/**DB에서 사원번호 가져오기 */
+	public String getEmpNo() {
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		String getEmpNo = "";
+		
+		
+		try {
+			con = getConn();
+			String sql = "select emp_no from emp order by emp_no desc";
+			ps = con.prepareStatement(sql);
+			rs = ps.executeQuery();
+			
+			if(rs.next()) {
+				getEmpNo = rs.getString(1);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return getEmpNo;
+		
 	}
 	
 	/**

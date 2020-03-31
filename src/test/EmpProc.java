@@ -1,13 +1,16 @@
 package test;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.swing.JButton;
@@ -19,6 +22,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 public class EmpProc extends JFrame implements ActionListener {
 
@@ -27,7 +31,7 @@ public class EmpProc extends JFrame implements ActionListener {
 	JLabel vEmpNo, vPwd, vName, vEmpPos, vID, vSignUp, vHead, vWork;
 	JTextField xEmpNo, xName, xId;
 	JPasswordField xPwd;
-	JButton btnSignUp, btnWkStart, btnWkEnd, btnClose;
+	JButton btnSignUp, btnWkStart, btnWkEnd, btnClose, btnEmpNo;
 	JComboBox cbEmpPos;
 	String[] div = { "대표이사", "고문", "부장", "차장", "과장", "대리", "사원", "인턴" };
 	
@@ -68,6 +72,7 @@ public class EmpProc extends JFrame implements ActionListener {
 		vSignUp.setVisible(false);
 		btnSignUp.setEnabled(false);
 		btnSignUp.setVisible(false);
+		btnEmpNo.setVisible(false);
 		
 		this.mList = mList;
 		
@@ -167,8 +172,17 @@ public class EmpProc extends JFrame implements ActionListener {
 
 		xEmpNo = new JTextField();
 		xEmpNo.setBounds(320, 193, 180, 27);
+		xEmpNo.setEnabled(false);
 		panel_1.add(xEmpNo);
 		xEmpNo.setColumns(10);
+
+		btnEmpNo = new JButton("사번 생성");
+		btnEmpNo.setFont(new Font("함초롬돋움", Font.BOLD, 15));
+		btnEmpNo.setFocusPainted(false);
+		btnEmpNo.setBackground(Color.white);
+		btnEmpNo.setBounds(510, 190, 120 , 33);
+		btnEmpNo.addActionListener(this);
+		panel_1.add(btnEmpNo);
 
 		xName = new JTextField();
 		xName.setColumns(10);
@@ -190,12 +204,13 @@ public class EmpProc extends JFrame implements ActionListener {
 		panel_1.add(cbEmpPos);
 
 		btnSignUp = new JButton("가입하기");
+		btnSignUp.setFocusPainted(false);
 		btnSignUp.setForeground(new Color(82, 54, 55));
 		btnSignUp.setBackground(new Color(255, 215, 0));
 		btnSignUp.setFont(new Font("함초롬돋움", Font.BOLD, 15));
 		btnSignUp.setBounds(320, 520, 130, 40);
-		panel_1.add(btnSignUp);
 		btnSignUp.addActionListener(this);
+		panel_1.add(btnSignUp);
 		
 		btnWkStart = new JButton("수정하기");
 		btnWkStart.setForeground(new Color(82, 54, 55));
@@ -239,7 +254,28 @@ public class EmpProc extends JFrame implements ActionListener {
 		if (ae.getSource() == btnSignUp) {
 			insertEmp();
 			System.out.println("insertEmp() 호출 종료");
-		} 
+		}
+		if(ae.getSource() == btnEmpNo) {
+			EmpDAO dao = new EmpDAO();
+			String countEmpNo = dao.countEmpNo();
+			if(countEmpNo.equals("0")) {
+				System.out.println(countEmpNo);
+				LocalDate date = LocalDate.now();
+				int year = date.getYear();
+				String firstEmpNo = year + "00000";
+				int iYear = Integer.parseInt(firstEmpNo)+1;
+				String strFirstEmpNo = String.valueOf(iYear);
+				xEmpNo.setText(strFirstEmpNo);
+			}else {
+				System.out.println("사원번호 체크");
+				String getEmpNo = dao.getEmpNo();
+				int iGetEmpNo = Integer.parseInt(getEmpNo)+1;
+				String strGetEmpNo = String.valueOf(iGetEmpNo);
+				xEmpNo.setText(strGetEmpNo);
+			}
+				
+			
+		}
 //			else if (ae.getSource() == btnCancel) {
 //			this.dispose(); // 창닫기 (현재창만 닫힘)
 //			// system.exit(0)=> 내가 띄운 모든 창이 다 닫힘

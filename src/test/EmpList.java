@@ -26,7 +26,7 @@ public class EmpList extends JFrame implements ActionListener, MouseListener{
 	JPanel panel, panel_1;
 	JScrollPane scrollPane;
 	JTable table;
-	JButton btnSearch, btnHead, btnWkStart, btnWkEnd;
+	JButton btnSearch, btnHead, btnWkStart, btnWkEnd, btnRefresh;
 	JTextField xSearch;
 	JLabel vHead;
 	DefaultTableModel model;
@@ -91,20 +91,27 @@ public class EmpList extends JFrame implements ActionListener, MouseListener{
 		btnWkEnd.addActionListener(this);
 		btnWkEnd.setBounds(857, 50, 97, 30);
 		panel.add(btnWkEnd);
+
+		xSearch = new JTextField();
+		xSearch.setText("날짜입력 : yyyy-MM-dd");
+		xSearch.setBounds(550, 90, 198, 30);
+		xSearch.addMouseListener(this);
+		panel.add(xSearch);
+		xSearch.setColumns(10);
 		
 		btnSearch = new JButton("검색");
 		btnSearch.setForeground(new Color(82, 54, 55));
 		btnSearch.setBackground(new Color(255, 215, 0));
 		btnSearch.addActionListener(this);
-		btnSearch.setBounds(857, 90, 97, 30);
+		btnSearch.setBounds(750, 90, 97, 30);
 		panel.add(btnSearch);
-
-		xSearch = new JTextField();
-		xSearch.setText("날짜입력 : yyyy-MM-dd");
-		xSearch.setBounds(655, 90, 198, 30);
-		xSearch.addMouseListener(this);
-		panel.add(xSearch);
-		xSearch.setColumns(10);
+		
+		btnRefresh= new JButton("새로고침");
+		btnRefresh.setForeground(Color.white);
+		btnRefresh.setBackground(Color.GRAY);
+		btnRefresh.addActionListener(this);
+		btnRefresh.setBounds(857, 90, 97, 30);
+		panel.add(btnRefresh);
 
 		panel_1 = new JPanel();
 		panel_1.setBackground(new Color(255, 215, 0));
@@ -186,6 +193,7 @@ public class EmpList extends JFrame implements ActionListener, MouseListener{
 				WkAndPayData wkInfo = new WkAndPayData();
 				wkInfo.insertWkDayAndStart(nowDay, nowHourMin);
 				JOptionPane.showMessageDialog(null, "출근되었습니다.", "확인", JOptionPane.INFORMATION_MESSAGE);
+				btnWkStart.setEnabled(false);
 			}else
 				return;
 			
@@ -232,11 +240,15 @@ public class EmpList extends JFrame implements ActionListener, MouseListener{
 				wkAndPayInfo.updateWkEndAndPay(empNo, wkDay, nowHourMin, strPay);
 				
 				JOptionPane.showMessageDialog(null, "퇴근되었습니다.", "확인", JOptionPane.INFORMATION_MESSAGE);
+				btnWkEnd.setEnabled(false);
 			}else
 				return;
 			
 			jTableRefresh();
 		}		
+		if(e.getSource() == btnRefresh) {
+			jTableRefresh();
+		}
 		
 
 	}
