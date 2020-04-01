@@ -264,59 +264,7 @@ public class EmpDAO {
 		}
 	}
 	
-	/**사원번호 존재유무 체크 */
-	public String countEmpNo() {
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		
-		String countEmpNo = "";
-		
 
-		try {
-			con = getConn();
-			String sql = "select count(emp_pos) from emp";
-			ps = con.prepareStatement(sql);
-			rs = ps.executeQuery();
-			
-			while(rs.next()) {
-				countEmpNo = rs.getString(1);
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return countEmpNo;
-		
-	}
-	
-	/**DB에서 사원번호 가져오기 */
-	public String getEmpNo() {
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		
-		String getEmpNo = "";
-		
-		
-		try {
-			con = getConn();
-			String sql = "select emp_no from emp order by emp_no desc";
-			ps = con.prepareStatement(sql);
-			rs = ps.executeQuery();
-			
-			if(rs.next()) {
-				getEmpNo = rs.getString(1);
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return getEmpNo;
-		
-	}
 	
 	/**
 	 * 회원정보 삭제 : tip: 실무에서는 회원정보를 Delete 하지 않고 탈퇴여부만 체크한다.

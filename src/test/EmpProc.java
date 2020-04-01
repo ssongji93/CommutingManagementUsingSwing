@@ -31,7 +31,7 @@ public class EmpProc extends JFrame implements ActionListener {
 	JLabel vEmpNo, vPwd, vName, vEmpPos, vID, vSignUp, vHead, vWork;
 	JTextField xEmpNo, xName, xId;
 	JPasswordField xPwd;
-	JButton btnSignUp, btnWkStart, btnWkEnd, btnClose, btnEmpNo;
+	JButton btnSignUp, btnWkStart, btnWkEnd, btnClose, btnEmpNo, btnCheckId;
 	JComboBox cbEmpPos;
 	String[] div = { "대표이사", "고문", "부장", "차장", "과장", "대리", "사원", "인턴" };
 	
@@ -189,15 +189,24 @@ public class EmpProc extends JFrame implements ActionListener {
 		xName.setBounds(320, 240, 180, 27);
 		panel_1.add(xName);
 
-		xPwd = new JPasswordField();
-		xPwd.setColumns(10);
-		xPwd.setBounds(320, 390, 180, 27);
-		panel_1.add(xPwd);
-
 		xId = new JTextField();
 		xId.setColumns(10);
 		xId.setBounds(320, 343, 180, 27);
 		panel_1.add(xId);
+		
+		btnCheckId = new JButton("중복검사");
+		btnCheckId.setFont(new Font("함초롬돋움", Font.BOLD, 15));
+		btnCheckId.setFocusPainted(false);
+		btnCheckId.setBackground(Color.white);
+		btnCheckId.setBounds(510, 340, 120 , 33);
+		btnCheckId.addActionListener(this);
+		panel_1.add(btnCheckId);
+
+		
+		xPwd = new JPasswordField();
+		xPwd.setColumns(10);
+		xPwd.setBounds(320, 390, 180, 27);
+		panel_1.add(xPwd);
 
 		cbEmpPos = new JComboBox<String>(div);
 		cbEmpPos.setBounds(320, 293, 180, 27);
@@ -256,8 +265,8 @@ public class EmpProc extends JFrame implements ActionListener {
 			System.out.println("insertEmp() 호출 종료");
 		}
 		if(ae.getSource() == btnEmpNo) {
-			EmpDAO dao = new EmpDAO();
-			String countEmpNo = dao.countEmpNo();
+			RegEmpData regEmp = new RegEmpData();
+			String countEmpNo = regEmp.checkEmpNo();
 			if(countEmpNo.equals("0")) {
 				System.out.println(countEmpNo);
 				LocalDate date = LocalDate.now();
@@ -268,13 +277,23 @@ public class EmpProc extends JFrame implements ActionListener {
 				xEmpNo.setText(strFirstEmpNo);
 			}else {
 				System.out.println("사원번호 체크");
-				String getEmpNo = dao.getEmpNo();
+				String getEmpNo = regEmp.getEmpNo();
 				int iGetEmpNo = Integer.parseInt(getEmpNo)+1;
 				String strGetEmpNo = String.valueOf(iGetEmpNo);
 				xEmpNo.setText(strGetEmpNo);
+			}			
+		}
+		if(ae.getSource() == btnCheckId) {
+			RegEmpData regEmp = new RegEmpData();
+			String id = xId.getText();
+			String checkId = regEmp.checkEmpId(id);
+			if(checkId.equals("0")) {
+				JOptionPane.showMessageDialog(null, "사용 가능한 아이디 입니다");
+			}else {
+				JOptionPane.showMessageDialog(null, "중복된 아이디 입니다.");
+				xId.setText("");
 			}
-				
-			
+			System.out.println(id);
 		}
 //			else if (ae.getSource() == btnCancel) {
 //			this.dispose(); // 창닫기 (현재창만 닫힘)
